@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, TEXT
 import os
 import datetime
 
@@ -10,6 +10,9 @@ db = client.test_database
 
 #Create runs collection
 recipies = db.recipies
+
+# Add text index (required for searching in all fields at the same time)
+recipies.create_index([("$**", TEXT)], name="TextIndex", language="none")
 
 #Create run objects to be stored in collection
 authors = {"Janneke": "jvdzwaan", "Robin": "robintw", "Raquel": "raquel-ucl"}
@@ -31,6 +34,3 @@ for filename in os.listdir('.'):
             "date": datetime.datetime.utcnow()}
         #Insert image metadata in DB
         run_id = recipies.insert(run)
-
-
-
